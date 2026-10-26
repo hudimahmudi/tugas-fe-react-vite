@@ -4,6 +4,8 @@ import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import ContentPage from './pages/ContentPage.jsx'
+import { Bell, ChevronDown } from 'lucide-react'
+import { Button } from './components/ui.jsx'
 
 const initialContents = [
   { id: 1, title: '5 tips membuat konten lebih konsisten', channel: 'YouTube', format: 'Video pendek', status: 'Ide', priority: 'Tinggi', date: '25 Okt 2026' },
@@ -50,20 +52,18 @@ function App() {
     <div className="app-shell">
       <Sidebar activePage={page} onNavigate={setPage} />
       <main className="main-area">
-        <header className="topbar">
-          <div>
-            <p className="eyebrow">SABTU, 24 OKTOBER 2026</p>
-            <h1>{page === 'dashboard' ? 'Selamat pagi, Alya! 👋' : 'Ruang Konten'}</h1>
+        <header className="app-topbar">
+          <div className="app-topbar-heading ">
           </div>
-          <div className="topbar-actions">
-            <button className="icon-button notification-button" aria-label="Notifikasi">
-              ♧<span />
-            </button>
-            <button className="profile-button" onClick={() => setPage('login')}>
-              <span className="avatar">A</span>
-              <span className="profile-name">Alya Putri</span>
-              <span className="chevron">⌄</span>
-            </button>
+          <div className="app-topbar-actions">
+            <Button className="app-notification-button" variant="outline" size="icon" aria-label="Notifikasi">
+              <Bell size={17} /><span />
+            </Button>
+            <Button className="app-topbar-profile" variant="ghost" onClick={() => setPage('login')}>
+              <span className="app-avatar">S</span>
+              <span className="app-topbar-profile-name">Salwa Afiifah</span>
+              <ChevronDown size={15} />
+            </Button>
           </div>
         </header>
 
