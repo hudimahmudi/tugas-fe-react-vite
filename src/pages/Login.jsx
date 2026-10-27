@@ -25,13 +25,13 @@ function Login({ onLogin, onRegister }) {
           <label htmlFor="login-email">Email</label>
           <input id="login-email" type="email" placeholder="Enter your email" autoComplete="email" required />
 
-          <label htmlFor="login-password">Kata sandi</label>
+          <label htmlFor="login-password">Password</label>
           <input id="login-password" type="password" placeholder="Enter your password" autoComplete="current-password" required minLength="6" />
 
-          <button className="bg-purple-600 hover:bg-purple-700 auth-submit" type="submit">Masuk</button>
+          <button className="bg-purple-600 hover:bg-purple-700 auth-submit" type="submit">Log In</button>
         </form>
 
-        <div className="auth-divider"><span>atau masuk dengan</span></div>
+        <div className="auth-divider"><span>or sign in with</span></div>
         <button
           className="google-login-button"
           type="button"
@@ -48,10 +48,10 @@ function Login({ onLogin, onRegister }) {
         {googleNotice && <p className="google-login-notice" role="status">{googleNotice}</p>}
 
         <p className="auth-switch">
-          Belum punya akun? <button className="text-button" type="button" onClick={onRegister}>Daftar gratis</button>
+          Don't have an account? <button className="text-button" type="button" onClick={onRegister}>Sign up for free</button>
         </p>
         <p className="auth-footnote">
-          Dengan masuk, kamu menyetujui <a href="#" onClick={(event) => event.preventDefault()}>Syarat &amp; Ketentuan</a> dan <a href="#" onClick={(event) => event.preventDefault()}>Kebijakan Privasi</a>.
+          By logging in, you agree to our <a href="#" onClick={(event) => event.preventDefault()}>Terms of Service</a> and <a href="#" onClick={(event) => event.preventDefault()}>Privacy Policy</a>.
         </p>
       </section>
     </main>

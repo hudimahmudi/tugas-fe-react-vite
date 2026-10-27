@@ -4,11 +4,11 @@ import {
   BriefcaseBusiness,
   Camera,
   CalendarDays,
+  ChartNoAxesCombined,
   Check,
   Clock3,
   FileText,
   FileVideo,
-  Lightbulb,
   MoreHorizontal,
   Music2,
   Plus,
@@ -17,14 +17,15 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Progress } from '../components/ui.jsx'
+import { contentStatuses, getContentStatus } from '../contentWorkflow.js'
 
 const statusColors = {
-  Ide: 'status-idea',
-  'Menulis skrip': 'status-writing',
-  Produksi: 'status-production',
-  'Sedang diedit': 'status-editing',
-  'Siap terbit': 'status-ready',
-  Terbit: 'status-published',
+  idea: 'status-idea',
+  scripting: 'status-writing',
+  recording: 'status-production',
+  editing: 'status-editing',
+  ready: 'status-ready',
+  published: 'status-published',
 }
 
 const platformIcons = {
@@ -35,8 +36,24 @@ const platformIcons = {
 }
 
 function Dashboard({ contents, onViewAll, onAddContent }) {
-  const publishedCount = contents.filter((content) => content.status === 'Terbit').length
-  const inProgressCount = contents.filter((content) => content.status !== 'Ide' && content.status !== 'Terbit').length
+  const monthlyGoal = 20
+  const currentMonth = new Date()
+  const monthContents = contents.filter((content) => {
+    if (!content.scheduledDate) return false
+    const scheduledDate = new Date(`${content.scheduledDate}T00:00:00`)
+    return scheduledDate.getFullYear() === currentMonth.getFullYear()
+      && scheduledDate.getMonth() === currentMonth.getMonth()
+  })
+  const monthProgressCount = monthContents.filter((content) => !['idea', 'published'].includes(content.status)).length
+  const monthCompletedCount = monthContents.filter((content) => ['ready', 'published'].includes(content.status)).length
+  const monthlyProgress = monthContents.length
+    ? Math.round((monthCompletedCount / monthContents.length) * 100)
+    : 0
+  const monthlyGoalProgress = Math.round((monthCompletedCount / monthlyGoal) * 100)
+  const monthlyGoalRemaining = Math.max(0, monthlyGoal - monthCompletedCount)
+  const monthLabel = currentMonth.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })
+  const publishedCount = contents.filter((content) => content.status === 'published').length
+  const inProgressCount = contents.filter((content) => !['idea', 'published'].includes(content.status)).length
   const stats = [
     { label: 'Total konten', value: contents.length, note: 'Di semua platform', icon: FileText, tone: 'violet' },
     { label: 'Sedang dikerjakan', value: inProgressCount, note: 'Dalam proses', icon: Clock3, tone: 'amber' },
@@ -111,7 +128,7 @@ function Dashboard({ contents, onViewAll, onAddContent }) {
                           </div>
                         </td>
                         <td><span className="dashboard-platform-name">{content.channel}</span></td>
-                        <td><Badge className={`dashboard-status ${statusColors[content.status] || 'status-idea'}`}><i />{content.status}</Badge></td>
+                        <td><Badge className={`dashboard-status ${statusColors[content.status] || 'status-idea'}`}><i />{getContentStatus(content.status).label}</Badge></td>
                         <td><span className="dashboard-date"><CalendarDays size={14} />{content.date}</span></td>
                         <td><Button variant="ghost" size="icon" aria-label={`Opsi ${content.title}`}><MoreHorizontal size={18} /></Button></td>
                       </tr>
@@ -137,15 +154,59 @@ function Dashboard({ contents, onViewAll, onAddContent }) {
             <div className="dashboard-goal-meta"><strong>3 dari 5 konten</strong><span>60%</span></div>
             <Progress value={60} />
             <p className="dashboard-helper"><Check size={14} /> Dua konten lagi untuk mencapai targetmu minggu ini.</p>
+            <div className="dashboard-monthly-goal">
+              <div className="dashboard-monthly-goal-heading">
+                <span><Target size={14} /> Achievement bulanan</span>
+                <strong>{monthLabel}</strong>
+              </div>
+              <div className="dashboard-goal-meta">
+                <strong>{monthCompletedCount} dari {monthlyGoal} konten</strong>
+                <span>{monthlyGoalProgress}%</span>
+              </div>
+              <Progress value={monthlyGoalProgress} className="dashboard-monthly-goal-progress" />
+              <p className="dashboard-helper">
+                <Check size={14} />
+                {monthlyGoalRemaining > 0
+                  ? `${monthlyGoalRemaining} konten lagi untuk mencapai target bulan ini.`
+                  : 'Target bulanan berhasil dicapai. Pertahankan progresmu!'}
+              </p>
+            </div>
           </CardContent>
         </Card>
-        <Card className="dashboard-tip-card">
-          <div className="dashboard-tip-icon"><Lightbulb size={20} /></div>
-          <div>
-            <Badge variant="outline" className="dashboard-tip-label">TIPS HARI INI</Badge>
-            <h2>Mulai dari ide sederhana</h2>
-            <p>Catat ide kecil yang muncul. Kamu bisa mengembangkannya nanti.</p>
-          </div>
+        <Card className="dashboard-monthly-card">
+          <CardHeader className="dashboard-section-header">
+            <div>
+              <CardTitle>Analisis progres bulanan</CardTitle>
+              <CardDescription>Status konten terjadwal · {monthLabel}</CardDescription>
+            </div>
+            <span className="dashboard-monthly-icon"><ChartNoAxesCombined size={19} /></span>
+          </CardHeader>
+          <CardContent className="dashboard-monthly-content">
+            <div className="dashboard-monthly-summary">
+              <div><strong>{monthContents.length}</strong><span>Konten bulan ini</span></div>
+              <div><strong>{monthProgressCount}</strong><span>Sedang diproses</span></div>
+              <div><strong>{monthCompletedCount}</strong><span>Siap / tayang</span></div>
+            </div>
+            <div className="dashboard-monthly-progress-heading">
+              <span>Target penyelesaian</span><strong>{monthlyProgress}%</strong>
+            </div>
+            <Progress value={monthlyProgress} className="dashboard-monthly-progress" />
+            <div className="dashboard-stage-breakdown">
+              {contentStatuses.map((status) => {
+                const count = monthContents.filter((content) => content.status === status.value).length
+                const share = monthContents.length ? (count / monthContents.length) * 100 : 0
+                return (
+                  <div className="dashboard-stage-row" key={status.value}>
+                    <span className={`dashboard-stage-dot ${status.color}`} />
+                    <span className="dashboard-stage-label">{status.label}</span>
+                    <div className="dashboard-stage-track"><i style={{ width: `${share}%` }} /></div>
+                    <strong>{count}</strong>
+                  </div>
+                )
+              })}
+            </div>
+            {monthContents.length === 0 && <p className="dashboard-monthly-empty">Belum ada konten dengan jadwal pada bulan ini.</p>}
+          </CardContent>
         </Card>
       </section>
     </div>
