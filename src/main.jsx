@@ -921,6 +921,184 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
   .workflow-section-heading { align-items: flex-start; flex-direction: column; gap: 3px; }
   .workflow-section-heading > span { text-align: left; }
 }
+
+.app-shell .main-area {
+  min-height: calc(100vh - 76px);
+  margin-left: 0;
+  padding: 0 clamp(16px, 4vw, 48px) 40px;
+}
+.app-shell > .app-topbar { display: none; }
+.app-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  width: 100vw;
+  border-bottom: 1px solid #ffffff12;
+  background: #171a28f2;
+  box-shadow: 0 12px 30px #080b1829;
+  backdrop-filter: blur(18px);
+}
+.app-navbar-inner {
+  display: flex;
+  width: calc(100% - 64px);
+  max-width: 1440px;
+  min-height: 76px;
+  align-items: center;
+  gap: 48px;
+  margin: 0 auto;
+}
+.app-navbar-brand {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 11px;
+  color: #f5f4fb;
+  text-decoration: none;
+}
+.app-navbar-brand-mark {
+  display: grid;
+  width: 39px;
+  height: 39px;
+  place-items: center;
+  border: 1px solid #ffffff36;
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(145deg, #9b84ff, #654ce0);
+  box-shadow: 0 5px 16px #7157df50;
+  font-family: Georgia, serif;
+  font-size: 28px;
+  font-style: italic;
+  line-height: 1;
+}
+.app-navbar-brand-copy { display: grid; gap: 3px; }
+.app-navbar-brand-copy strong { font-size: 15px; font-weight: 700; letter-spacing: -.35px; }
+.app-navbar-brand-copy small { color: #9297ab; font-size: 8px; font-weight: 700; letter-spacing: 1.15px; }
+.app-navbar-nav { display: flex; height: 76px; align-items: center; gap: 7px; }
+.app-navbar-link {
+  position: relative;
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 9px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  color: #a7aabc;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 550;
+  transition: color .18s, background .18s, border-color .18s;
+}
+.app-navbar-link:hover { color: #f1efff; background: #ffffff0b; }
+.app-navbar-link.active {
+  border-color: #9c87ff25;
+  color: #e5deff;
+  background: linear-gradient(120deg, #8168ef2a, #6b5ad719);
+}
+.app-navbar-link.active::after {
+  position: absolute;
+  right: 14px;
+  bottom: -18px;
+  left: 14px;
+  height: 2px;
+  border-radius: 2px;
+  background: #9c87ff;
+  box-shadow: 0 0 12px #9c87ff80;
+  content: '';
+}
+.app-navbar-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+.app-navbar .app-notification-button {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ffffff18;
+  border-radius: 11px;
+  color: #c3c6d4;
+  background: #ffffff08;
+  cursor: pointer;
+  transition: color .18s, background .18s, border-color .18s;
+}
+.app-navbar .app-notification-button:hover,
+.app-navbar .notification-dropdown[open] > summary { border-color: #ffffff2b; color: #fff; background: #ffffff12; }
+.app-navbar .app-notification-button > span { top: 8px; right: 9px; border-color: #171a28; }
+.app-navbar .app-navbar-profile {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  color: #f2f2f7;
+  background: transparent;
+  cursor: pointer;
+  transition: background .18s, border-color .18s;
+}
+.app-navbar .app-navbar-profile:hover,
+.app-navbar .profile-dropdown[open] > summary { border-color: #ffffff17; background: #ffffff0a; }
+.app-navbar-profile-identity { display: grid; gap: 3px; text-align: left; }
+.app-navbar-profile-name { color: #e7e8ef; font-size: 11px; font-weight: 600; }
+.app-navbar-profile-role { color: #989daf; font-size: 9px; }
+.app-navbar .app-navbar-profile > svg { color: #9095a8; transition: transform .18s; }
+.app-navbar .app-avatar { width: 34px; height: 34px; border-color: #ffffff30; color: #fff; background: linear-gradient(145deg, #e19b76, #985e91); }
+.app-navbar .profile-card { top: calc(100% + 10px); }
+.app-navbar-logout {
+  display: flex;
+  width: 100%;
+  min-height: 38px;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 0 8px;
+  border: 0;
+  border-top: 1px solid #ffffff16;
+  border-radius: 0 0 7px 7px;
+  color: #d3a9b0;
+  background: transparent;
+  font-size: 10px;
+  text-align: left;
+  cursor: pointer;
+}
+.app-navbar-logout:hover { color: #ffd9df; background: #ffffff0a; }
+.content-page { width: min(100%, 1440px); margin: 28px auto 0; }
+
+@media (max-width: 760px) {
+  .app-navbar-inner { width: calc(100% - 40px); gap: 22px; }
+  .app-navbar-nav { gap: 2px; }
+  .app-navbar-link { gap: 7px; padding: 0 10px; }
+}
+@media (max-width: 600px) {
+  .app-shell .main-area { min-height: calc(100vh - 112px); padding: 0 14px 28px; }
+  .app-navbar-inner {
+    width: calc(100% - 28px);
+    min-height: 108px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0;
+    padding: 10px 0 7px;
+  }
+  .app-navbar-brand { gap: 8px; }
+  .app-navbar-brand-mark { width: 34px; height: 34px; border-radius: 10px; font-size: 24px; }
+  .app-navbar-brand-copy strong { font-size: 13px; }
+  .app-navbar-brand-copy small { font-size: 7px; }
+  .app-navbar-actions { gap: 6px; margin-left: 0; }
+  .app-navbar .app-notification-button { width: 36px; height: 36px; }
+  .app-navbar .app-navbar-profile { min-height: 40px; gap: 6px; padding: 2px; }
+  .app-navbar .app-avatar { width: 31px; height: 31px; }
+  .app-navbar-profile-name, .app-navbar-profile > svg { display: none; }
+  .app-navbar-nav { order: 3; width: 100%; height: 43px; justify-content: flex-start; gap: 7px; }
+  .app-navbar-link { min-height: 35px; padding: 0 12px; font-size: 11px; }
+  .app-navbar-link.active::after { right: 12px; bottom: -5px; left: 12px; }
+  .content-page { margin-top: 20px; }
+}
+@media (max-width: 370px) {
+  .app-navbar-inner { width: calc(100% - 22px); }
+  .app-navbar-brand-copy small { letter-spacing: .8px; }
+  .app-navbar-link { gap: 5px; padding: 0 8px; }
+  .app-navbar-profile-role { display: none; }
+}
 `
 
 createRoot(document.getElementById('root')).render(
