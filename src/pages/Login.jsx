@@ -1,11 +1,24 @@
 import { useState } from 'react'
+import { roleAccounts } from '../roles.js'
 
 function Login({ onLogin, onRegister }) {
   const [googleNotice, setGoogleNotice] = useState('')
+  const [loginError, setLoginError] = useState('')
 
   function handleSubmit(event) {
     event.preventDefault()
-    onLogin()
+    const formData = new FormData(event.currentTarget)
+    const email = formData.get('email')?.toString().trim().toLowerCase()
+    const password = formData.get('password')?.toString()
+    const account = roleAccounts.find((item) => item.email === email && item.password === password)
+
+    if (!account) {
+      setLoginError('Email atau password tidak sesuai. Periksa kembali kredensial akun demo.')
+      return
+    }
+
+    setLoginError('')
+    onLogin(account)
   }
 
   return (
@@ -23,13 +36,21 @@ function Login({ onLogin, onRegister }) {
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <label htmlFor="login-email">Email</label>
-          <input id="login-email" type="email" placeholder="Enter your email" autoComplete="email" required />
+          <input id="login-email" name="email" type="email" placeholder="Enter your email" autoComplete="email" required onChange={() => setLoginError('')} />
 
           <label htmlFor="login-password">Password</label>
-          <input id="login-password" type="password" placeholder="Enter your password" autoComplete="current-password" required minLength="6" />
+          <input id="login-password" name="password" type="password" placeholder="Enter your password" autoComplete="current-password" required minLength="8" onChange={() => setLoginError('')} />
 
           <button className="bg-purple-600 hover:bg-purple-700 auth-submit" type="submit">Log In</button>
+          {loginError && <p className="login-error" role="alert">{loginError}</p>}
         </form>
+
+        <div className="demo-account-hint">
+          <strong>Akun demo</strong>
+          <span>Creator: salwa@gmail.com · 12345678</span>
+          <span>Editor: rakapratama@gmail.com · 12345678</span>
+          <span>Admin: admincreatore@gmail.com · 87654321</span>
+        </div>
 
         <div className="auth-divider"><span>or sign in with</span></div>
         <button

@@ -1,9 +1,10 @@
-import { ArrowRight, Bell, BriefcaseBusiness, Camera, CheckCircle2, Clock3, ClipboardList, LayoutDashboard, LogOut, ChevronDown, FileVideo, Music2 } from 'lucide-react'
+import { ArrowRight, Bell, BriefcaseBusiness, Camera, ChartNoAxesCombined, CheckCircle2, Clock3, ClipboardList, LayoutDashboard, LogOut, ChevronDown, FileVideo, Music2 } from 'lucide-react'
 import { getContentStatus } from '../contentWorkflow.js'
 
 const menuItems = [
   { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { id: 'contents', icon: ClipboardList, label: 'Konten' },
+  { id: 'matrix', icon: ChartNoAxesCombined, label: 'Matrix' },
 ]
 
 const contentPlatforms = [
@@ -13,7 +14,7 @@ const contentPlatforms = [
   { name: 'LinkedIn', icon: BriefcaseBusiness, className: 'linkedin' },
 ]
 
-function Navbar({ activePage, onNavigate, contents }) {
+function Navbar({ activePage, onNavigate, contents, account }) {
   function navigateFromDropdown(event) {
     onNavigate('contents')
     event.currentTarget.closest('details').open = false
@@ -92,18 +93,23 @@ function Navbar({ activePage, onNavigate, contents }) {
 
           <details className="profile-dropdown">
             <summary className="app-navbar-profile">
-              <span className="app-avatar">S</span>
+              <span className="app-avatar">{account.initials}</span>
               <span className="app-navbar-profile-identity">
-                <span className="app-navbar-profile-name">Salwa Afiifah</span>
-                <span className="app-navbar-profile-role">Creator</span>
+                <span className="app-navbar-profile-name">{account.name}</span>
+                <span className={`app-navbar-profile-role role-${account.id}`}>{account.role}</span>
               </span>
               <ChevronDown size={15} />
             </summary>
-            <section className="profile-card" aria-label="Profil Salwa Afiifah">
+            <section className="profile-card" aria-label={`Profil ${account.name}`}>
               <div className="profile-card-heading">
-                <span className="profile-card-avatar">S</span>
-                <span><strong>Salwa Afiifah</strong><small>Creator</small></span>
+                <span className="profile-card-avatar">{account.initials}</span>
+                <span><strong>{account.name}</strong><small>{account.role}</small></span>
               </div>
+              <div className={`profile-role-validation role-${account.id}`}>
+                <strong>Hak akses {account.role}</strong>
+                <span>{account.access}</span>
+              </div>
+              <div className="profile-account-email">{account.email}</div>
               <div className="profile-accounts-heading">
                 <strong>Akun konten</strong>
                 <span>{contentPlatforms.length} platform</span>

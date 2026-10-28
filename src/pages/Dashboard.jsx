@@ -35,7 +35,7 @@ const platformIcons = {
   LinkedIn: BriefcaseBusiness,
 }
 
-function Dashboard({ contents, onViewAll, onAddContent }) {
+function Dashboard({ contents, onViewAll, onAddContent, canCreate }) {
   const monthlyGoal = 20
   const currentMonth = new Date()
   const monthContents = contents.filter((content) => {
@@ -67,7 +67,7 @@ function Dashboard({ contents, onViewAll, onAddContent }) {
           <Badge className="dashboard-hero-badge"><Sparkles size={13} /> MINGGU INI</Badge>
           <h2>Setiap konten hebat dimulai dari satu ide.</h2>
           <p>Kamu sudah selangkah lebih dekat dengan targetmu. Yuk, lanjutkan!</p>
-          <Button variant="secondary" onClick={onAddContent}><Plus size={16} /> Tambah ide baru</Button>
+          {canCreate && <Button variant="secondary" onClick={onAddContent}><Plus size={16} /> Tambah ide baru</Button>}
         </div>
         <div className="dashboard-hero-art" aria-hidden="true">
           <div className="dashboard-hero-orbit" />
@@ -108,7 +108,7 @@ function Dashboard({ contents, onViewAll, onAddContent }) {
               <span><FileText size={22} /></span>
               <strong>Belum ada konten</strong>
               <p>Mulai dengan menambahkan ide pertamamu.</p>
-              <Button variant="outline" size="sm" onClick={onAddContent}><Plus size={14} /> Tambah ide baru</Button>
+              {canCreate && <Button variant="outline" size="sm" onClick={onAddContent}><Plus size={14} /> Tambah ide baru</Button>}
             </div>
           ) : (
             <div className="dashboard-table-scroll">
