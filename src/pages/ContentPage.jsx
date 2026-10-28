@@ -3,7 +3,7 @@ import { CalendarDays, Check, ChevronDown, ExternalLink, Filter, MoreHorizontal,
 import { contentStatuses, formatScheduledDate } from '../contentWorkflow.js'
 
 const columns = [
-  { id: 'idea', label: 'Idea', statuses: ['idea'], hint: 'Ide belum dimulai', allowAdd: true },
+  { id: 'idea', label: 'Idea', statuses: ['idea'], hint: 'Ide belum dimulai' },
   { id: 'scripting', label: 'Scripting', statuses: ['scripting'], hint: 'Naskah belum dimulai' },
   { id: 'recording', label: 'Recording', statuses: ['recording'], hint: 'Rekaman belum dimulai' },
   { id: 'editing', label: 'Editing', statuses: ['editing'], hint: 'Review belum dimulai' },
@@ -141,7 +141,6 @@ function ContentPage({ contents, onAddContent, onUpdateContent }) {
             <section className="kanban-column" key={column.id}>
               <header className="kanban-column-header">
                 <div><h2>{column.label}</h2><span>{columnContents.length}</span></div>
-                {column.allowAdd && <button type="button" aria-label={`Tambah konten ke ${column.label}`} onClick={openNewForm}><Plus size={16} /></button>}
               </header>
               <div className="kanban-card-list">
                 {columnContents.map((content, index) => {
