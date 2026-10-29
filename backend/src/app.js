@@ -1,5 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+const authRoutes = require('./routes/auth.routes');
+const channelRoutes = require('./routes/channel.routes');
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
@@ -9,5 +12,10 @@ app.use(express.json());
 app.get('/api/v1/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server berjalan' });
 });
+
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/channels', channelRoutes);
+
+app.use(errorHandler);
 
 module.exports = app;
