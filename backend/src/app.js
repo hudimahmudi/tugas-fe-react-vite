@@ -3,6 +3,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/auth.routes');
 const channelRoutes = require('./routes/channel.routes');
 const contentRoutes = require('./routes/content.routes');
+const checklistRoutes = require('./routes/checklist.route')
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -17,6 +18,7 @@ app.get('/api/v1/health', (req, res) => {
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/channels', channelRoutes);
 app.use('/api/v1/contents', contentRoutes);
+app.use('/api/v1', checklistRoutes)
 
 app.use(errorHandler);
 
