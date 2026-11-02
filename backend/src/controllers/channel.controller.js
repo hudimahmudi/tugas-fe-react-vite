@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-const PLATFORMS = ['youtube', 'tiktok', 'instagram', 'linkedin'];
+const {PLATFORMS} = require('../config/constants');
 
 async function listChannels(req, res, next) {
   try {
