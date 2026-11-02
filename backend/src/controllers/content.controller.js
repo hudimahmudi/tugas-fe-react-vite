@@ -1,11 +1,8 @@
 const db = require('../config/db');
+const httpError = require('../utils/httpError');
+const { today } = require('../utils/date');
 const { validateContentInput } = require('../validators/content.validator');
-
-function httpError(status, message) {
-  const error = new Error(message);
-  error.status = status;
-  return error;
-}
+const { assertNextStatus, validatePublishUrl } = require('../validators/publish.validator');
 
 function parseId(value) {
   const id = Number(value);
@@ -54,7 +51,9 @@ async function getContent(req, res, next) {
     if (!content) throw httpError(404, 'Konten tidak ditemukan');
 
     const checklists = await db('content_checklists').where({ content_id: id }).orderBy('id');
-    const metrics = await db('content_metrics').where({ content_id: id }).orderBy('recorded_at', 'desc');
+    const metrics = await db('content_metrics')
+      .where({ content_id: id })
+      .orderBy('recorded_at', 'desc');
 
     res.json({ ...content, checklists, metrics });
   } catch (error) {
@@ -83,12 +82,32 @@ async function createContent(req, res, next) {
 async function updateContent(req, res, next) {
   try {
     const id = parseId(req.params.id);
-    await findOwnedContent(id, req.user.id);
+    const current = await findOwnedContent(id, req.user.id);
 
     const data = validateContentInput(req.body || {}, { partial: true });
+
+    if (req.body && req.body.published_url !== undefined) {
+      data.published_url = req.body.published_url ? String(req.body.published_url).trim() : null;
+    }
+
+    // Aturan transisi: hanya boleh maju satu tahap
+    if (data.status !== undefined && data.status !== current.status) {
+      assertNextStatus(current.status, data.status);
+    }
+
+    const nextStatus = data.status ?? current.status;
+    const nextUrl = data.published_url !== undefined ? data.published_url : current.published_url;
+
+    // Aturan publish: wajib punya published_url yang valid
+    if (nextStatus === 'published') {
+      validatePublishUrl(nextUrl);
+      if (!current.published_date) data.published_date = today();
+    }
+
     if (Object.keys(data).length === 0) {
       throw httpError(422, 'Tidak ada data yang diubah');
     }
+
     if (data.channel_id) await ensureOwnedChannel(data.channel_id, req.user.id);
 
     await db('contents').where({ id }).update(data);
@@ -105,6 +124,7 @@ async function deleteContent(req, res, next) {
     const id = parseId(req.params.id);
     await findOwnedContent(id, req.user.id);
 
+    // checklist dan metrik ikut terhapus lewat ON DELETE CASCADE
     await db('contents').where({ id }).del();
     res.status(204).end();
   } catch (error) {
@@ -112,4 +132,10 @@ async function deleteContent(req, res, next) {
   }
 }
 
-module.exports = { listContents, getContent, createContent, updateContent, deleteContent };
+module.exports = {
+  listContents,
+  getContent,
+  createContent,
+  updateContent,
+  deleteContent,
+};
